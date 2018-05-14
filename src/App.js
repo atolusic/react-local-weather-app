@@ -13,13 +13,12 @@ class App extends Component {
       lat: null,
       lon: null
     },
-    apiKey: "caebadf768a884867595e3f499211aea"
+    apiKey: "caebadf768a884867595e3f499211aea",
+    error: false
   };
 
-  componentDidMount() {
-    const { apiKey } = this.state;
-
-    const setLocation = (noNav, coords) => {
+  setLocation = (noNav, apiKey, coords, search, searchData) => {
+    if (!search) {
       this.setState(
         prevState => ({
           ...prevState,
@@ -30,15 +29,45 @@ class App extends Component {
         }),
         () => {
           const { lat, lon } = this.state.location;
+
           const url = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
 
           axios.get(url).then(data => {
             this.setState({ locationData: data.data });
-            console.log(data);
           });
         }
       );
-    };
+    } else {
+      this.setState(prevState => ({
+        ...prevState,
+        location: {
+          lat: coords.lat,
+          lon: coords.lon
+        },
+        locationData: searchData,
+        error: false
+      }));
+    }
+  };
+
+  changeLocationHandler = searchInput => {
+    const { apiKey } = this.state;
+
+    let url = `http://api.openweathermap.org/data/2.5/weather?q=${searchInput}&appid=${apiKey}`;
+    axios
+      .get(url)
+      .then(info => {
+        const { data } = info;
+        const { coord } = data;
+        this.setLocation(null, apiKey, coord, true, data);
+      })
+      .catch(err => {
+        this.setState({ error: true });
+      });
+  };
+
+  componentDidMount() {
+    const { apiKey } = this.state;
 
     if (navigator) {
       const { geolocation } = navigator;
@@ -46,10 +75,10 @@ class App extends Component {
       geolocation.getCurrentPosition(
         data => {
           const { coords } = data;
-          setLocation(false, coords);
+          this.setLocation(false, apiKey, coords);
         },
         error => {
-          setLocation(true);
+          this.setLocation(true, apiKey); // kada je "navigator" blokiran
         }
       );
     } else {
@@ -58,12 +87,15 @@ class App extends Component {
   }
 
   render() {
-    const { locationData } = this.state;
+    const { locationData, error } = this.state;
 
     return (
       <MuiThemeProvider>
         <div className="App">
-          <Layout>
+          <Layout
+            error={error}
+            changeLocationHandler={this.changeLocationHandler}
+          >
             <WeatherDetails locationData={locationData} />
           </Layout>
         </div>

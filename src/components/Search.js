@@ -13,19 +13,28 @@ class Search extends React.Component {
     });
   };
 
+  onSubmit = e => {
+    const { changeLocationHandler } = this.props;
+    const { search } = this.state;
+    e.preventDefault();
+    changeLocationHandler(search);
+  };
+
   render() {
     const { search } = this.state;
+    const { error } = this.props;
 
     return (
       <div>
-        <form>
+        <form onSubmit={e => this.onSubmit(e)}>
           <input
             name="search"
             value={search}
             onChange={e => this.onSearchChangeHandler(e)}
           />
-          <p>{search}</p>
+          <button type="submit">GO</button>
         </form>
+        <p>{search}</p> {error ? <span>&larr; NOT FOUND</span> : null}
       </div>
     );
   }
