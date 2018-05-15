@@ -35,6 +35,7 @@ class Search extends React.Component {
             value={search}
             floatingLabelText="Search City"
             onChange={e => this.onSearchChangeHandler(e)}
+            errorText={error ? `${search} ⇐ NOT FOUND` : null}
           />
           <IconButton
             type="submit"
@@ -45,10 +46,11 @@ class Search extends React.Component {
             search
           </IconButton>
         </form>
-        <p>{search}</p> {error ? <span>&larr; NOT FOUND</span> : null}
       </div>
     );
   }
 }
+
+// larr; NOT FOUND
 
 export default Search;

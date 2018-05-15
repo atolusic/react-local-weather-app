@@ -2,7 +2,7 @@ import React from "react";
 import Search from "./Search";
 
 const Layout = props => {
-  const { changeLocationHandler, error, loading, startLoading } = props;
+  const { changeLocationHandler, error, startLoading } = props;
 
   return (
     <div>

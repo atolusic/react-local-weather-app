@@ -21,3 +21,10 @@ body {
   font-weight: 400;
   line-height: 1.7;
 }
+
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
