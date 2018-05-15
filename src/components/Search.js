@@ -1,4 +1,6 @@
 import React from "react";
+import TextField from "material-ui/TextField";
+import IconButton from "material-ui/IconButton";
 
 class Search extends React.Component {
   state = {
@@ -14,9 +16,10 @@ class Search extends React.Component {
   };
 
   onSubmit = e => {
-    const { changeLocationHandler } = this.props;
+    const { changeLocationHandler, startLoading } = this.props;
     const { search } = this.state;
     e.preventDefault();
+    startLoading();
     changeLocationHandler(search);
   };
 
@@ -27,12 +30,20 @@ class Search extends React.Component {
     return (
       <div>
         <form onSubmit={e => this.onSubmit(e)}>
-          <input
+          <TextField
             name="search"
             value={search}
+            floatingLabelText="Search City"
             onChange={e => this.onSearchChangeHandler(e)}
           />
-          <button type="submit">GO</button>
+          <IconButton
+            type="submit"
+            tooltipPosition="bottom-center"
+            iconClassName="material-icons"
+            tooltip="Search"
+          >
+            search
+          </IconButton>
         </form>
         <p>{search}</p> {error ? <span>&larr; NOT FOUND</span> : null}
       </div>

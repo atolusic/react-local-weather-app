@@ -14,7 +14,8 @@ class App extends Component {
       lon: null
     },
     apiKey: "caebadf768a884867595e3f499211aea",
-    error: false
+    error: false,
+    loading: false
   };
 
   setLocation = (noNav, apiKey, coords, search, searchData) => {
@@ -25,7 +26,8 @@ class App extends Component {
           location: {
             lat: noNav ? 45.815399 : coords.latitude,
             lon: noNav ? 15.966568 : coords.longitude
-          }
+          },
+          loading: true
         }),
         () => {
           const { lat, lon } = this.state.location;
@@ -33,7 +35,7 @@ class App extends Component {
           const url = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
 
           axios.get(url).then(data => {
-            this.setState({ locationData: data.data });
+            this.setState({ locationData: data.data, loading: false });
           });
         }
       );
@@ -45,7 +47,8 @@ class App extends Component {
           lon: coords.lon
         },
         locationData: searchData,
-        error: false
+        error: false,
+        loading: false
       }));
     }
   };
@@ -87,16 +90,17 @@ class App extends Component {
   }
 
   render() {
-    const { locationData, error } = this.state;
+    const { locationData, error, loading } = this.state;
 
     return (
       <MuiThemeProvider>
         <div className="App">
           <Layout
+            startLoading={() => this.setState({ loading: true })}
             error={error}
             changeLocationHandler={this.changeLocationHandler}
           >
-            <WeatherDetails locationData={locationData} />
+            <WeatherDetails loading={loading} locationData={locationData} />
           </Layout>
         </div>
       </MuiThemeProvider>
