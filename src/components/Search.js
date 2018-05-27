@@ -4,7 +4,8 @@ import IconButton from "material-ui/IconButton";
 
 class Search extends React.Component {
   state = {
-    search: ""
+    search: "",
+    searchError: ""
   };
 
   onSearchChangeHandler = e => {
@@ -21,10 +22,20 @@ class Search extends React.Component {
     e.preventDefault();
     startLoading();
     changeLocationHandler(search);
+    this.setState(
+      {
+        searchError: search
+      },
+      () => {
+        this.setState({
+          search: ""
+        });
+      }
+    );
   };
 
   render() {
-    const { search } = this.state;
+    const { search, searchError } = this.state;
     const { error } = this.props;
 
     return (
@@ -35,9 +46,11 @@ class Search extends React.Component {
             value={search}
             floatingLabelText="Search City"
             onChange={e => this.onSearchChangeHandler(e)}
-            errorText={error ? `${search} ⇐ NOT FOUND` : null}
+            errorText={error ? `${searchError} ⇐ NOT FOUND` : null}
+            autoComplete="off"
           />
           <IconButton
+            disabled={search ? false : true}
             type="submit"
             tooltipPosition="bottom-center"
             iconClassName="material-icons"
@@ -50,7 +63,5 @@ class Search extends React.Component {
     );
   }
 }
-
-// larr; NOT FOUND
 
 export default Search;

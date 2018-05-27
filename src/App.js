@@ -94,13 +94,25 @@ class App extends Component {
 
     return (
       <MuiThemeProvider>
-        <div className="App">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            width: "100%"
+          }}
+        >
           <Layout
             startLoading={() => this.setState({ loading: true })}
             error={error}
             changeLocationHandler={this.changeLocationHandler}
           >
-            <WeatherDetails loading={loading} locationData={locationData} />
+            <WeatherDetails
+              error={error}
+              loading={loading}
+              locationData={locationData}
+            />
           </Layout>
         </div>
       </MuiThemeProvider>
